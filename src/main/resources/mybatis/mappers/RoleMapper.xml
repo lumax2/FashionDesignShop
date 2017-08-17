@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fds.mapper.RoleMapper">
+
+    <!-- 保存角色权限信息到关联表 -->
+    <insert id="saveRoleModule">
+    insert into role_module_p values (#{roleId},#{moduleId})
+    </insert>
+    
+     <!-- 根据角色id删除角色用户关联表 -->
+    <delete id="deleteRModuleByRoleId">
+    delete from role_module_p where role_id in(
+     <foreach collection="array" separator="," item="roleId">
+     #{roleId}
+     </foreach>
+    )
+    </delete>
+    
+    
+    <!-- 根据角色id删除角色用户关联表 -->
+    <delete id="deleteURoleByRoleId">
+    delete from user_role_p where role_id in(
+     <foreach collection="array" separator="," item="roleId">
+     #{roleId}
+     </foreach>
+    )
+    </delete>
+    
+    <!-- 根据角色id删除角色 -->
+    <delete id="deleteRoleById">
+     delete from role_p where role_id in(
+     <foreach collection="array" separator="," item="roleId">
+     #{roleId}
+     </foreach>
+     )
+    
+    </delete>
+	<select id="getRoleByUsername" resultType="Role">
+			select * from role_p where role_id in
+			(
+			select role_id from user_role_p p 
+						where p.user_id =
+					(select user_id from user_p where user_name= #{username}) 
+			)
+	</select>
+	
+	<select id="fingRoleListByUserId" resultType="string">
+		select role_id from user_role_p where user_id=#{userId}
+	</select>
+</mapper>

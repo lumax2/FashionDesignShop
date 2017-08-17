@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fds.mapper.ProductMapper">
+
+<resultMap type="Product" id="productRM" autoMapping="true">
+	<id property="productId" column="product_id"/>
+</resultMap>
+<!--查询所有商品  -->
+<select id="findAllProduct" resultMap="productRM">
+select * from product_p
+</select>
+
+<!--根据productId产品  -->
+<select id="findProductByProductId" resultType="Product">
+	select * from product_p where product_id=#{productId}
+</select>
+
+<!--修改产品  -->
+<!-- <update id="updateProduct"  >
+	update product_p set product_name=#{productName},product_price=#{productPrice},product_catory=#{productCatory},
+	img_url=#{imgUrl,jdbcType=VARCHAR},
+	product_desc=#{productDesc} where product_id=#{productId}
+</update> -->
+
+<!--新增产品  -->
+<insert id="createProduct">
+	insert into product_p (product_id,product_name,product_price,product_catory,img_url,product_desc) 
+	values(
+	#{productId},
+	#{productName},
+	#{productPrice},
+	#{productCatory},
+	#{imgUrl,jdbcType=VARCHAR},
+	#{productDesc}
+	)
+</insert>
+
+
+<delete id="deleteProductById">
+delete from product_p where product_id=#{productId}
+</delete>
+
+<select id="findProdName" resultType="string">
+	select distinct(product_name) from product_p
+</select>
+
+<resultMap type="ProductJson" id="ProdJsonRM">
+	<id property="name" column="product_name"/>
+	<result property="value" column="sale_num"/>
+</resultMap>
+
+<select id="findProdNV" resultMap="ProdJsonRM">
+	select p.product_name,ori.sale_num 
+from
+(
+select item.product_id ori_id,sum(buy_num) sale_num
+from product_order_p item left join product_p p
+on item.product_id =p.product_id 
+group by item.product_id) ori
+left join 
+product_p  p
+on ori.ori_id=p.product_id
+</select>
+
+<update id="updateProduct">
+update 	 product_p 
+ <set>
+	product_name=#{productName},
+	product_price=#{productPrice},
+	product_catory=#{productCatory},
+	img_url=#{imgUrl,jdbcType=VARCHAR},
+	product_desc=#{productDesc},
+</set>
+	where product_id=#{productId}
+</update>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

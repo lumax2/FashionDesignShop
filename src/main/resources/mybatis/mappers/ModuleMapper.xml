@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fds.mapper.ModuleMapper">
+   <select id="findAll" resultMap="MRM">
+      	select * from 
+		module_p m
+		left join
+		(select module_id p_id,module_name p_name from module_p) p
+		on m.parent_id=p.p_id
+		order by module_name
+   </select>
+   <sql id="findSql">
+            select * from 
+module_p m
+left join
+(select module_id p_id,module_name p_name from module_p) p
+on m.parent_id=p.p_id
+   </sql>
+   
+   <resultMap type="Module" id="MRM" autoMapping="true">
+      <id column="module_id" property="moduleId"/>
+      <association property="parentModule" javaType="Module">
+         <id column="p_id" property="moduleId"/>
+         <result column="p_name" property="moduleName"/>
+      </association>
+   </resultMap>
+   
+   <insert id="saveModule">
+     insert into module_p(module_id,module_name,parent_id) values(#{moduleId},#{moduleName},#{parentModule.moduleId})
+   </insert>
+	
+	<select id="findModuleById" resultMap="MRM">
+	  <include refid="findSql"/>
+	  where module_id=#{moduleId}
+	</select>
+	
+	<update id="updateModule">
+	  update module_p
+	  <set>
+	     module_name=#{moduleName},
+	     parent_id=#{parentModule.moduleId}
+	  </set>
+	  where module_id=#{moduleId}
+	</update>
+	
+	<delete id="deleteModule">
+	   delete from module_p where module_id in (
+	   <foreach collection="array" item="moduleId" separator=",">
+	     #{moduleId}
+	   </foreach>
+	   )
+	</delete>
+	
+	<delete id="deleteRoleModule">
+	  delete from role_module_p where module_id in (
+	  <foreach collection="array" item="moduleId" separator=",">
+	   #{moduleId}
+	  </foreach>
+	  )
+	</delete>
+</mapper>

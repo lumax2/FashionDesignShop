@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fds.mapper.OrderMapper">
+
+	<!-- 根据订单id查订单信息 -->
+	<select id="findOrderByOrderId" resultType="Order">
+	select * from order_p where order_id = #{orderId}
+	
+	</select>
+
+	<select id="findOrderByUserId" resultType="Order">
+	select * from order_p  where user_id = #{userId}
+	
+	</select>
+	
+	<!-- 查询所有订单 -->
+	<select id="findAll" resultType="Order">
+	select * from order_p
+	</select>
+	
+	<!-- 根据orderId修改订单信息 -->
+	<update id="updateOrder">
+		update order_p set order_money=#{orderMoney},
+		receive_info=#{receiveInfo},paystate=#{payState},
+		user_id=#{userId},order_time=#{orderTime} where order_id=#{orderId}
+	</update>
+	
+	<!-- 根据订单id数组删除订单 -->
+	<delete id="deleteOrders">
+		delete from order_p where order_id in
+		(
+			<foreach collection="array" item="id" separator=",">
+			#{id}
+			</foreach>
+		)
+	</delete>
+	
+	<!-- 新增订单 -->
+	<insert id="newOrder">
+		insert into order_p (order_id,order_money,receive_info,paystate,user_id,order_time)
+		values(#{orderId},#{orderMoney},#{receiveInfo},#{payState},#{userId},#{orderTime})
+	
+	</insert>
+
+	<insert id="saveOrder">
+	insert into order_p values(#{orderId},#{orderMoney},
+		#{receiveInfo},#{payState},#{userId},#{orderTime})
+	</insert>
+</mapper>

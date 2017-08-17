@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fds.mapper.UserMapper">
+
+	<!-- 新增用户 -->
+	<insert id="saveUser">
+	
+	insert into user_p(user_id,user_name,password,name,telephone)
+	 values(#{userId},#{username},#{password},#{name},#{telephone})
+	
+	</insert>
+	
+	<!-- 更改用户信息 -->
+	<update id="updateUser">
+	update user_p set user_name=#{username},password=#{password},
+	name=#{name},telephone=#{telephone} where user_id=#{userId}
+	</update>
+	
+	
+	<!-- 给userId相应用户的添加角色 -->
+	<insert id="saveRoles">
+		insert into user_role_p (user_id,role_id) values(#{userId},#{roleId})
+	</insert>
+	
+	<!-- 删除指定用户的所有角色 -->
+	<delete id="deleteUserRoles">
+		delete from user_role_p where user_id=#{userId}
+	</delete>
+	
+	<!-- 删除用户 -->
+	<delete id="deleteUser">
+		delete from user_p where user_id in
+		(
+			<foreach collection="array" item="id" separator=",">
+			#{id}
+			</foreach>
+		)
+	</delete>
+	
+</mapper>

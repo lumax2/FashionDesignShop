@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.fds.mapper.OrderItemMapper">
+	
+	<insert id="saveOrderItem">
+	
+	insert into orderitem_p values(#{orderId},#{productId},#{buyNum})
+	
+	</insert>
+
+	<select id="findOrderItemByUserId" resultType="Order">
+	select od.* from order_p od 
+		left join
+		orderitem_p oi
+		on od.order_id=oi.order_id where od.user_id=#{userId}
+		
+	</select>
+	
+	<!-- ==============================NEXT BY Cade============================== -->
+
+	
+	<insert id="addOrderItem">
+		insert into product_order_p values(#{productId},#{orderId},#{buyNum})
+	</insert>
+
+	<select id="getOrderItemByUserId" resultType="OrderItem">
+		select po.* from
+		product_order_p po
+		left join
+		(select order_id as oid from order_p where user_id = #{userId}) o
+		on po.order_id = o.oid
+	</select>
+	
+</mapper>
